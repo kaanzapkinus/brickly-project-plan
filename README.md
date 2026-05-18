@@ -30,7 +30,18 @@ An AI-powered to-do app concept that solves big-task paralysis. The user types a
 | **Issues** (55 work items across 5 PMBOK phases) | [Issues tab](https://github.com/kaanzapkinus/brickly-project-plan/issues) |
 | **Milestones** (5 — one per PMBOK phase, with due dates) | [Milestones](https://github.com/kaanzapkinus/brickly-project-plan/milestones) |
 | **Project Charter** (SMART objectives, scope, risks, deliverables) | [docs/PROJECT_CHARTER.md](docs/PROJECT_CHARTER.md) |
-| **Supporting artifacts** (stakeholders, risks, WBS, comms plan, SMART goals, KPIs) | [docs/SUPPORTING_ARTIFACTS.md](docs/SUPPORTING_ARTIFACTS.md) |
+| **Scope Statement** (in/out-of-scope, baseline) | [docs/SCOPE_STATEMENT.md](docs/SCOPE_STATEMENT.md) |
+| **Stakeholder Register** | [docs/STAKEHOLDER_REGISTER.md](docs/STAKEHOLDER_REGISTER.md) |
+| **Risk Register** (10 risks, heat map, top-3) | [docs/RISK_REGISTER.md](docs/RISK_REGISTER.md) |
+| **Work Breakdown Structure** (3 levels + mermaid diagram) | [docs/WBS.md](docs/WBS.md) |
+| **Communication Plan** | [docs/COMMUNICATION_PLAN.md](docs/COMMUNICATION_PLAN.md) |
+| **SMART Goals Brief** | [docs/SMART_GOALS.md](docs/SMART_GOALS.md) |
+| **KPI Tracking** (with variance log) | [docs/KPI_TRACKING.md](docs/KPI_TRACKING.md) |
+| **Mid-Project Review minutes** | [docs/reviews/2026-05-13-midproject.md](docs/reviews/2026-05-13-midproject.md) |
+| **Schedule Variance Analysis** | [docs/reviews/SCHEDULE_VARIANCE.md](docs/reviews/SCHEDULE_VARIANCE.md) |
+| **Tech Stack ADR** | [docs/adr/0001-tech-stack.md](docs/adr/0001-tech-stack.md) |
+| **Post-Mortem** | [docs/POST_MORTEM.md](docs/POST_MORTEM.md) |
+| **Contribution standards** | [CONTRIBUTING.md](CONTRIBUTING.md) |
 
 ---
 

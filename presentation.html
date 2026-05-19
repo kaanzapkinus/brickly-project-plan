@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="tr" data-tab="brifing" data-lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brickly — IT Project Management Final</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink:          #1a1714;
+  --ink-soft:     #2a2622;
+  --paper:        #f5f1ea;
+  --paper-warm:   #ede6d8;
+  --paper-deep:   #e0d5c0;
+  --brick:        #b54834;
+  --brick-deep:   #7a2e1f;
+  --gold:         #c9a961;
+  --sage:         #5c6b4e;
+  --muted:        #6b6358;
+  --shadow:       rgba(26, 23, 20, 0.08);
+  --shadow-strong:rgba(26, 23, 20, 0.18);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
+  font-size: 16px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(26, 23, 20, 0.10) 1px, transparent 0);
+  background-size: 32px 32px;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Top navigation ───────────────────────────── */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(245, 241, 234, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 5vw;
+}
+
+.brand {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand::before {
+  content: '';
+  display: inline-block;
+  width: 22px;
+  height: 16px;
+  background: var(--brick);
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+}
+.brand em {
+  font-style: italic;
+  color: var(--brick);
+  font-weight: 400;
+}
+
+.top-tabs {
+  display: flex;
+  gap: 6px;
+  background: var(--paper-warm);
+  border: 1px solid var(--ink);
+  padding: 4px;
+  border-radius: 100px;
+}
+.top-tab {
+  background: transparent;
+  border: none;
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 10px 22px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.top-tab:hover { color: var(--brick); }
+.top-tab.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.lang-switch {
+  display: flex;
+  gap: 0;
+  background: var(--ink);
+  padding: 3px;
+  border-radius: 100px;
+}
+.lang-switch button {
+  background: transparent;
+  border: none;
+  color: var(--paper);
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.lang-switch button.active {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* When on Brifing tab, hide language switcher (brifing is TR-only) */
+html[data-tab="brifing"] .lang-switch { display: none; }
+
+/* ─── Tab panes ───────────────────────────── */
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* Bilingual visibility */
+html[data-lang="tr"] .lang-en { display: none; }
+html[data-lang="en"] .lang-tr { display: none; }
+
+/* ─── Hero ───────────────────────────── */
+.hero {
+  position: relative;
+  z-index: 1;
+  padding: 100px 5vw 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--ink);
+}
+.hero-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 60px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.hero-meta-block { display: flex; flex-direction: column; gap: 4px; }
+.hero-meta-block span:first-child { color: var(--brick); }
+
+.hero-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-size: clamp(48px, 8vw, 120px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin-bottom: 32px;
+  font-variation-settings: "opsz" 144;
+}
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--brick);
+}
+
+.hero-subtitle {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 300;
+  color: var(--muted);
+  max-width: 760px;
+  margin-bottom: 60px;
+  line-height: 1.4;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--ink);
+}
+.hero-stat {
+  padding: 28px 24px 28px 0;
+  border-right: 1px solid var(--ink);
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.hero-stat-value {
+  font-family: 'Fraunces', serif;
+  font-size: 42px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.hero-stat-value .unit {
+  font-size: 14px;
+  color: var(--muted);
+  margin-left: 6px;
+  font-weight: 300;
+}
+
+/* ─── Section base ───────────────────────────── */
+.section {
+  position: relative;
+  z-index: 1;
+  padding: 80px 5vw;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.section-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+  margin-bottom: 50px;
+  align-items: start;
+}
+.section-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--brick);
+  text-transform: uppercase;
+  border-top: 1px solid var(--ink);
+  padding-top: 16px;
+}
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-size: clamp(34px, 5vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.section-title em {
+  font-style: italic;
+  color: var(--brick);
+}
+.section-content { max-width: 860px; margin-left: auto; }
+.lead {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 28px;
+}
+.section-content p {
+  margin-bottom: 20px;
+  font-size: 17px;
+  color: var(--ink-soft);
+}
+.section-content p strong { font-weight: 600; color: var(--ink); }
+.section-content code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.section-content a {
+  color: var(--brick);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+/* ─── Pull quote ───────────────────────────── */
+.pullquote {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: clamp(26px, 3.6vw, 42px);
+  font-weight: 300;
+  line-height: 1.3;
+  color: var(--brick-deep);
+  padding: 40px 0 40px 40px;
+  border-left: 3px solid var(--brick);
+  margin: 50px 0;
+  max-width: 900px;
+}
+.pullquote::before {
+  content: '"';
+  font-size: 80px;
+  line-height: 0;
+  vertical-align: -20px;
+  color: var(--brick);
+  margin-right: 8px;
+}
+
+/* ─── Sub-tabs (inside Sunum) ───────────────────────────── */
+.sub-tabs-wrap {
+  background: var(--paper-warm);
+  border-bottom: 1px solid var(--ink);
+  padding: 24px 5vw;
+}
+.sub-tabs {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sub-tab {
+  flex: 1;
+  background: var(--paper);
+  border: none;
+  border-right: 1px solid var(--ink);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 18px 24px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.sub-tab:last-child { border-right: none; }
+.sub-tab:hover { background: var(--paper-deep); }
+.sub-tab.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+.sub-tab .sub-tab-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  opacity: 0.6;
+}
+
+.sub-pane { display: none; }
+.sub-pane.active { display: block; }
+
+/* ─── Speaker note card ───────────────────────────── */
+.speaker-section {
+  position: relative;
+  z-index: 1;
+  padding: 50px 5vw;
+  max-width: 1400px;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(26,23,20,0.15);
+}
+.speaker-meta {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 40px;
+  margin-bottom: 24px;
+  align-items: start;
+}
+.speaker-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--brick);
+  border-top: 1px solid var(--ink);
+  padding-top: 14px;
+}
+.speaker-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+  display: block;
+}
+.speaker-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: clamp(26px, 3.5vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.speaker-title em {
+  font-style: italic;
+  color: var(--brick);
+  font-weight: 400;
+}
+
+.stage {
+  background: var(--paper-warm);
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  max-width: 900px;
+  margin-left: auto;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.stage-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brick);
+  font-weight: 600;
+  margin-top: 3px;
+}
+.stage-desc { font-size: 15px; line-height: 1.5; color: var(--ink); }
+
+.script {
+  max-width: 900px;
+  margin-left: auto;
+  background: var(--paper);
+  border-left: 3px solid var(--brick);
+  padding: 24px 30px;
+  margin-bottom: 16px;
+  font-family: 'Fraunces', serif;
+  font-size: 19px;
+  line-height: 1.55;
+  font-weight: 400;
+  color: var(--ink);
+  position: relative;
+}
+.script-lang-label {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.script.tr { background: rgba(201, 169, 97, 0.08); }
+.script.en { background: rgba(92, 107, 78, 0.06); }
+.script strong { color: var(--brick-deep); font-weight: 600; }
+
+.tip {
+  max-width: 900px;
+  margin: 14px 0 0 auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  padding-left: 16px;
+  border-left: 2px solid var(--paper-deep);
+}
+
+/* ─── Lesson / feature cards ───────────────────────────── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+}
+.feature-card {
+  background: var(--paper-warm);
+  border: 1px solid var(--ink);
+  padding: 28px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.feature-card .key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--brick);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: block;
+}
+.feature-card .name {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 10px;
+  line-height: 1.25;
+}
+.feature-card .desc { font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); }
+
+/* ─── Big phase band ───────────────────────────── */
+.phase-band {
+  margin: 50px 0;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.phase-row {
+  display: grid;
+  grid-template-columns: 70px 1fr 1.6fr 130px;
+  gap: 0;
+  border-bottom: 1px solid var(--ink);
+  align-items: center;
+}
+.phase-row:last-child { border-bottom: none; }
+.phase-num {
+  padding: 22px 18px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Fraunces', serif;
+  font-size: 36px;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1;
+  text-align: center;
+}
+.phase-name {
+  padding: 22px 24px;
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.2;
+  border-right: 1px solid rgba(26,23,20,0.15);
+}
+.phase-detail {
+  padding: 22px 24px;
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  border-right: 1px solid rgba(26,23,20,0.15);
+}
+.phase-dates {
+  padding: 22px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--brick);
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  text-align: center;
+}
+.phase-row.phase-1 .phase-num { background: #b54834; }
+.phase-row.phase-2 .phase-num { background: #c9a961; color: var(--ink); }
+.phase-row.phase-3 .phase-num { background: #5c6b4e; }
+.phase-row.phase-4 .phase-num { background: #6a8caf; }
+.phase-row.phase-5 .phase-num { background: #7a2e1f; }
+
+/* ─── Team cards (Kaan + Caner) ───────────────────────────── */
+.team-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 40px 0;
+}
+.team-card {
+  background: var(--paper-warm);
+  border: 1px solid var(--ink);
+  padding: 36px;
+  position: relative;
+}
+.team-card.kaan { background: var(--paper-warm); }
+.team-card.caner { background: #f0e6d4; }
+.team-card .role-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brick);
+  margin-bottom: 12px;
+  display: block;
+}
+.team-card .person-name {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+.team-card .person-name em { font-style: italic; }
+.team-card .person-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 24px;
+}
+.team-card .person-role {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--brick-deep);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+.team-card ul { list-style: none; padding-left: 0; }
+.team-card li {
+  position: relative;
+  padding: 6px 0 6px 22px;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+.team-card li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 14px;
+  width: 12px;
+  height: 8px;
+  background: var(--brick);
+  border: 1px solid var(--ink);
+  border-radius: 1px;
+}
+
+/* ─── Q&A blocks ───────────────────────────── */
+.qa-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 32px 0;
+}
+.qa-card {
+  background: var(--paper-warm);
+  border: 1px solid var(--ink);
+  padding: 0;
+  overflow: hidden;
+}
+.qa-q {
+  padding: 22px 28px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+.qa-q .q-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 4px;
+}
+.qa-a {
+  padding: 24px 28px;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.qa-a p { margin-bottom: 12px; }
+.qa-a p:last-child { margin-bottom: 0; }
+.qa-a strong { color: var(--brick-deep); }
+.qa-stage {
+  padding: 14px 28px;
+  background: var(--paper-deep);
+  border-top: 1px solid var(--ink);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.qa-stage::before {
+  content: '▸';
+  color: var(--brick);
+}
+
+/* ─── Number visual band (stats) ───────────────────────────── */
+.stat-band {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 60px 5vw;
+  margin: 50px 0;
+  position: relative;
+  z-index: 1;
+}
+.stat-band-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 40px;
+  align-items: start;
+}
+.stat-block .stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.stat-block .stat-value {
+  font-family: 'Fraunces', serif;
+  font-size: 56px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-block .stat-value em {
+  font-style: italic;
+  color: var(--gold);
+}
+.stat-block .stat-sub {
+  font-size: 13px;
+  color: rgba(245, 241, 234, 0.6);
+}
+
+/* ─── Risk / challenge cards ───────────────────────────── */
+.risk-table {
+  border-top: 1px solid var(--ink);
+  margin: 32px 0;
+}
+.risk-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr;
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(26, 23, 20, 0.2);
+  align-items: start;
+}
+.risk-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--brick);
+  letter-spacing: 0.1em;
+  padding-top: 4px;
+  font-weight: 600;
+}
+.risk-name {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+.risk-action {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.risk-action-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--sage);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+/* ─── Checklist ───────────────────────────── */
+.checklist {
+  list-style: none;
+  margin: 24px 0;
+  padding: 0;
+}
+.checklist li {
+  position: relative;
+  padding: 12px 0 12px 36px;
+  border-bottom: 1px solid rgba(26,23,20,0.10);
+  font-size: 16px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.checklist li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 16px;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  background: var(--paper);
+}
+.checklist li.done::before {
+  background: var(--brick);
+  border-color: var(--brick);
+}
+.checklist li.done::after {
+  content: '✓';
+  position: absolute;
+  left: 4px;
+  top: 11px;
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 14px;
+}
+.checklist li strong { color: var(--ink); font-weight: 600; }
+
+/* ─── Pipeline / steps ───────────────────────────── */
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0;
+  margin: 32px 0;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--paper-warm);
+}
+.pipeline-step {
+  padding: 24px;
+  border-right: 1px solid var(--ink);
+  position: relative;
+}
+.pipeline-step:last-child { border-right: none; }
+.pipeline-step .step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--brick);
+  margin-bottom: 12px;
+}
+.pipeline-step .step-name {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.pipeline-step .step-detail {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ─── Link block ───────────────────────────── */
+.link-block {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin: 28px 0;
+}
+.link-pill {
+  background: var(--paper-warm);
+  border: 1px solid var(--ink);
+  padding: 20px 24px;
+  text-decoration: none;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+.link-pill:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.link-pill .pill-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brick);
+}
+.link-pill .pill-value {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+/* ─── Footer ───────────────────────────── */
+.footer {
+  position: relative;
+  z-index: 1;
+  padding: 80px 5vw 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+  border-top: 1px solid var(--ink);
+}
+.footer-quote {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 300;
+  color: var(--muted);
+  max-width: 800px;
+  margin-bottom: 60px;
+  line-height: 1.4;
+}
+.footer-sig {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 32px;
+  border-top: 1px solid var(--ink);
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.footer-author { font-family: 'Fraunces', serif; }
+.footer-author-name {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.footer-author-detail {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.footer-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ─── Big thanks screen ───────────────────────────── */
+.thanks {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 10vh 5vw;
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--ink);
+}
+.thanks-title {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(64px, 12vw, 160px);
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 16px;
+  line-height: 1;
+}
+.thanks-title em { color: var(--brick); }
+.thanks-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── Two-column layout (briefing) ───────────────────────────── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin: 30px 0;
+}
+
+/* ─── Mobile ───────────────────────────── */
+@media (max-width: 900px) {
+  .top-nav { padding: 14px 4vw; flex-wrap: wrap; gap: 12px; }
+  .top-tabs { width: 100%; justify-content: center; }
+  .brand { font-size: 18px; }
+  .hero { padding: 70px 6vw 50px; }
+  .hero-meta { flex-direction: column; gap: 20px; }
+  .section { padding: 50px 6vw; }
+  .section-header { grid-template-columns: 1fr; gap: 18px; margin-bottom: 30px; }
+  .section-content { margin-left: 0; }
+  .speaker-meta { grid-template-columns: 1fr; gap: 14px; }
+  .stage, .script { margin-left: 0; max-width: 100%; }
+  .speaker-section { padding: 36px 6vw; }
+  .sub-tabs-wrap { padding: 14px 4vw; }
+  .sub-tab { padding: 14px 12px; font-size: 12px; }
+  .sub-tab .sub-tab-num { display: none; }
+  .phase-row { grid-template-columns: 60px 1fr; }
+  .phase-detail, .phase-dates { grid-column: 1 / -1; padding: 14px 24px; border-right: none; border-top: 1px solid rgba(26,23,20,0.15); }
+  .team-grid { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .risk-row { grid-template-columns: 1fr; gap: 12px; }
+  .pullquote { padding-left: 24px; margin: 36px 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--                   TOP NAV                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<nav class="top-nav">
+  <div class="brand">Brick<em>ly</em></div>
+  <div class="top-tabs">
+    <button class="top-tab active" data-tab="brifing">📚 Brifing</button>
+    <button class="top-tab" data-tab="sunum">🎤 Sunum</button>
+  </div>
+  <div class="lang-switch">
+    <button class="lang-btn active" data-lang="tr">TR</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--               TAB 1: BRIFING (TR)                 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="tab-pane active" data-pane="brifing">
+
+  <section class="hero">
+    <div class="hero-meta">
+      <div class="hero-meta-block">
+        <span>IT Project Management</span>
+        <span>Final Ödev — Plan Your IT Project</span>
+      </div>
+      <div class="hero-meta-block">
+        <span>Takım</span>
+        <span>Kaan Yazıcıoğlu · Caner Akcasu</span>
+      </div>
+      <div class="hero-meta-block">
+        <span>Bugün</span>
+        <span>19 Mayıs 2026 · Sunum Günü</span>
+      </div>
+    </div>
+    <h1 class="hero-title">
+      Plan, taslak,<br>
+      <em>sunum</em>.
+    </h1>
+    <p class="hero-subtitle">
+      Bu sayfa, sunumdan önce projeyi tek bakışta toparlamak için. Ödev nedir, biz ne yaptık, bugün ne yapacağız — hepsi aşağıda. Sunum içeriği için yukarıdan "Sunum" sekmesine geç.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-label">Issue</div>
+        <div class="hero-stat-value">55<span class="unit">total</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Kapanmış</div>
+        <div class="hero-stat-value">28<span class="unit">done</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Açık backlog</div>
+        <div class="hero-stat-value">27<span class="unit">open</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Repo dosyası</div>
+        <div class="hero-stat-value">18<span class="unit">files</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- §01 ÖDEV NEDİR? -->
+  <section class="section">
+    <div class="section-header">
+      <div><div class="section-number">§01 — Ödev Nedir?</div></div>
+      <h2 class="section-title">Bir araç seç,<br>bir <em>planlama</em> yap.</h2>
+    </div>
+    <div class="section-content">
+      <p class="lead">Ders: <strong>IT Project Management</strong>. Final ödevi: bir IT proje yönetim aracı seç (Trello, Asana, Notion, ClickUp, Jira, GitHub Projects...). Önceki ödevde belirlediğin To-Do App fikri için <strong>tam bir proje planı</strong> kur. Sınıfta canlı sun.</p>
+
+      <p>Plana mutlaka şunlar girmeli:</p>
+      <ul class="checklist">
+        <li class="done"><strong>Milestones</strong> — kilometre taşları</li>
+        <li class="done"><strong>Tasks &amp; Subtasks</strong> — açık hiyerarşi</li>
+        <li class="done"><strong>Assigned Resources</strong> — kim ne yapıyor</li>
+        <li class="done"><strong>Deadlines &amp; Timeline</strong> — gerçekçi zaman planı</li>
+        <li class="done"><strong>Labels, Priorities, Dependencies</strong> — araç destekliyorsa</li>
+      </ul>
+
+      <p>Sunumda hocanın bekledikleri:</p>
+      <ul class="checklist">
+        <li><strong>Aracı canlı aç</strong> — board'u göster</li>
+        <li><strong>Yapılandırmayı anlat</strong> — görevler, milestone'lar, roller</li>
+        <li><strong>4 soruyu cevapla:</strong></li>
+      </ul>
+
+      <div class="card-grid">
+        <div class="feature-card">
+          <span class="key">Soru 1</span>
+          <div class="name">Bu aracı neden seçtin?</div>
+          <p class="desc">Neden Trello değil, neden Notion değil. Tool choice savunması.</p>
+        </div>
+        <div class="feature-card">
+          <span class="key">Soru 2</span>
+          <div class="name">Projeyi nasıl planladın?</div>
+          <p class="desc">Hangi metodolojiyi takip ettin? PMBOK fazları, SMART, vb.</p>
+        </div>
+        <div class="feature-card">
+          <span class="key">Soru 3</span>
+          <div class="name">Sorumlulukları nasıl böldün?</div>
+          <p class="desc">Kim ne yaptı, neden öyle böldünüz?</p>
+        </div>
+        <div class="feature-card">
+          <span class="key">Soru 4</span>
+          <div class="name">Hangi zorluklarla karşılaştın?</div>
+          <p class="desc">Scope, zaman, takım, teknik... neyle savaştın?</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- §02 BRICKLY KONSEPTI -->
+  <section class="section">
+    <div class="section-header">
+      <div><div class="section-number">§02 — Brickly Nedir?</div></div>
+      <h2 class="section-title">Büyük görevi<br>tuğla tuğla <em>ör</em>.</h2>
+    </div>
+    <div class="section-content">
+      <p class="lead">Brickly — AI destekli, Sokratik soru soran, görev parçalayan bir to-do app konsepti. Adı "brick" (tuğla) metaforundan: büyük görevleri tuğla tuğla biriktirip bitirmek.</p>
+
+      <p>Kullanıcı büyük bir görev yazar ("bitirme tezimi yaz"). AI 3-5 netleştirici soru sorar ("hangi konu?", "hangi aşamadasın?", "deadline?"). Cevaplara göre <strong>DeepSeek API</strong> görevi 15-25 mikro-adıma böler (her biri 30-90 dakikalık). Her tamamlanan adım <strong>Duolingo tarzı</strong> XP, streak, badge ödüller getirir.</p>
+
+      <p><strong>Piyasada açık:</strong> Todoist, TickTick gibi basit listeciler procrastination'a yardım etmiyor; Motion, Reclaim gibi AI'lılar aylık 30 dolar+. Brickly, bu iki uç arasındaki boşluğu doldurur: <strong>sade kullanıcılar için akıllı ama karmaşık olmayan</strong>.</p>
+
+      <div class="pullquote">
+        Brickly ne yazılım, ne ürün — bir <em>vaka çalışması</em>. Plan'ın kendisi deliverable.
+      </div>
+
+      <p><strong>Önemli not:</strong> Bu ödev kapsamında Brickly <strong>yazılmadı</strong>. Sadece planlandı. Yani repo'da 27 execution issue açık duruyor — birisi inşa etmek isterse <code>#22</code>'den başlayabilir. Bizim teslimat<strong> plan'ın kendisi</strong>.</p>
+    </div>
+  </section>
+
+  <!-- §03 NE YAPTIK -->
+  <section class="section">
+    <div class="section-header">
+      <div><div class="section-number">§03 — Ne Yaptık?</div></div>
+      <h2 class="section-title">10 günde,<br>13 doküman, 55 <em>issue</em>.</h2>
+    </div>
+    <div class="section-content">
+      <p class="lead">PMBOK 5 faz modelini takip ederek 10 iş günlük planı GitHub Projects üzerinde inşa ettik. 5 milestone, 18 label, 5 custom field, 5 view, 13 planning dokümanı.</p>
+
+      <p><strong>Seçilen araç:</strong> <code>GitHub Projects v2</code>. Sınıf kuralı: her araç sadece bir gruba ait olabilir. Çoğu takım Trello/Asana'ya gitti, biz GitHub Projects'i seçtik — yazılım projesinin doğal yeri, endüstri standardı, portfolyo değerli.</p>
+
+      <p><strong>Şu anki repo durumu:</strong></p>
+
+      <div class="link-block">
+        <a class="link-pill" href="https://github.com/kaanzapkinus/brickly-project-plan" target="_blank">
+          <span class="pill-label">Public Repo</span>
+          <span class="pill-value">brickly-project-plan</span>
+        </a>
+        <a class="link-pill" href="https://github.com/users/kaanzapkinus/projects/2" target="_blank">
+          <span class="pill-label">Project Board</span>
+          <span class="pill-value">Brickly Project Board #2</span>
+        </a>
+        <a class="link-pill" href="https://github.com/kaanzapkinus/brickly-project-plan/issues" target="_blank">
+          <span class="pill-label">Issues (55)</span>
+          <span class="pill-value">28 closed · 27 open</span>
+        </a>
+        <a class="link-pill" href="https://github.com/kaanzapkinus/brickly-project-plan/milestones" target="_blank">
+          <span class="pill-label">Milestones (5)</span>
+          <span class="pill-value">PMBOK fazları, tarihli</span>
+        </a>
+      </div>
+
+      <p><strong>Repo'da olanlar:</strong></p>
+      <ul class="checklist">
+        <li class="done">README + 18 dosya · description set</li>
+        <li class="done">docs/PROJECT_CHARTER.md — 5 SMART hedef, scope, risk</li>
+        <li class="done">docs/STAKEHOLDER_REGISTER.md, RISK_REGISTER, WBS, COMMUNICATION_PLAN, SMART_GOALS, KPI_TRACKING, SCOPE_STATEMENT, POST_MORTEM</li>
+        <li class="done">docs/adr/0001-tech-stack.md — Architecture Decision Record</li>
+        <li class="done">docs/reviews/2026-05-13-midproject.md + SCHEDULE_VARIANCE.md</li>
+        <li class="done">CONTRIBUTING.md + .github/workflows/ci.yml (stub)</li>
+        <li class="done">NEXT_STEPS.md — yarın için checklist</li>
+      </ul>
+
+      <p><strong>Board'da olanlar:</strong></p>
+      <ul class="checklist">
+        <li class="done">55 issue, hepsinde acceptance criteria + assignee + labels + milestone + Priority + Effort + Phase + Sprint + Due Date</li>
+        <li class="done">28 issue closed (planning + monitoring + closure-prep), 27 open (execution backlog)</li>
+        <li class="done">5 milestone — PMBOK fazlarına göre, due-date'li</li>
+        <li class="done">18 label — type / priority / phase / status</li>
+        <li class="done">5 custom field — Priority, Effort (hours), Phase, Sprint, Due Date</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- §04 PMBOK FAZLARI -->
+  <section class="section">
+    <div class="section-header">
+      <div><div class="section-number">§04 — PMBOK Fazları</div></div>
+      <h2 class="section-title">5 faz,<br>10 iş <em>günü</em>.</h2>
+    </div>
+    <div class="section-content">
+      <p>Ders materyalindeki PMBOK 5 faz modelini board'a 1:1 yansıttık. Her faz = bir milestone. Tarihler 5 Mayıs Salı'dan 18 Mayıs Pazartesi'ye uzanıyor; submission yarın (19 Mayıs).</p>
+
+      <div class="phase-band">
+        <div class="phase-row phase-1">
+          <div class="phase-num">1</div>
+          <div class="phase-name">Initiation</div>
+          <div class="phase-detail">Project charter, stakeholder register, SMART goals, initial risk register, communication plan, repo &amp; board kurulumu.</div>
+          <div class="phase-dates">5 May<br>6 issue</div>
+        </div>
+        <div class="phase-row phase-2">
+          <div class="phase-num">2</div>
+          <div class="phase-name">Planning</div>
+          <div class="phase-detail">Scope statement, WBS, user personas, user flow, wireframes, hi-fi mockups, design system, gamification UI, DB schema, API spec, DeepSeek research, prompt templates, ADR.</div>
+          <div class="phase-dates">6-8 May<br>15 issue</div>
+        </div>
+        <div class="phase-row phase-3">
+          <div class="phase-num">3</div>
+          <div class="phase-name">Execution</div>
+          <div class="phase-detail">Frontend &amp; backend scaffolding, authentication, task CRUD, AI integration (clarify + decompose), Q&amp;A UI, hierarchical task list, gamification. Plan-only kapsamında <strong>Todo'da kaldı</strong> — execution backlog.</div>
+          <div class="phase-dates">11-15 May<br>25 issue</div>
+        </div>
+        <div class="phase-row phase-4">
+          <div class="phase-num">4</div>
+          <div class="phase-name">Monitoring &amp; Control</div>
+          <div class="phase-detail">KPI tracking, mid-project review, schedule variance analysis, code review standards.</div>
+          <div class="phase-dates">paralel<br>4 issue</div>
+        </div>
+        <div class="phase-row phase-5">
+          <div class="phase-num">5</div>
+          <div class="phase-name">Closure</div>
+          <div class="phase-detail">E2E testing (todo), deployment (todo), post-mortem (done), presentation prep (done), dry run (done).</div>
+          <div class="phase-dates">18 May<br>5 issue</div>
+        </div>
+      </div>
+
+      <p>27 open issue Phase 3 + Phase 5'in implementation kısmı — biz "scoped, prioritized, estimated execution backlog" diye anlatıyoruz. Hocaya da bu mesaj veriliyor: "Birisi Brickly'yi inşa etmek istese, Issue #22'den başlayabilir. Bizim teslimat planın kendisi."</p>
+    </div>
+  </section>
+
+  <!-- §05 SORUMLULUK PAYLAŞIMI -->
+  <section class="section">
+    <div class="section-header">
+      <div><div class="section-number">§05 — Sorumluluklar</div></div>
+      <h2 class="section-title">Güce göre,<br><em>eşit değil</em>.</h2>
+    </div>
+    <div class="section-content">
+      <p>Eşit değil, güçlü yöne göre böldük. Kaan tasarım yapmış bir frontend; Caner backend'de daha rahat. Bu açık iş bölümü hem hızı artırdı hem de "kim ne yapıyor" netleştirdi.</p>
+
+      <p><strong>Charter kuralı:</strong> efor saatlerinin birbirinden ±%15 fazla olmaması. KPI dokümanında haftalık takip edildi. Şu anki oran: <code>1.05</code> ✓ (limit içinde).</p>
+
+      <div class="team-grid">
+        <div class="team-card kaan">
+          <span class="role-tag">Project Manager · Frontend · Design</span>
+          <h3 class="person-name">Kaan <em>Yazıcıoğlu</em></h3>
+          <div class="person-id">SD1 · 97364 · @kaanzapkinus</div>
+          <div class="person-role">Plan'ın sahibi, board'un mimarı, sunumun ana konuşmacısı.</div>
+          <ul>
+            <li>Proje koordinasyonu + board yönetimi</li>
+            <li>UI/UX tasarım, Figma mockup, gamification görselleri</li>
+            <li>Frontend issue'ları (Next.js, Tailwind, Framer)</li>
+            <li>Charter, post-mortem, sunum scripti</li>
+          </ul>
+        </div>
+        <div class="team-card caner">
+          <span class="role-tag">Backend · AI Integration · QA</span>
+          <h3 class="person-name">Caner <em>Akcasu</em></h3>
+          <div class="person-id">SD1 · 97334 · @Canerakcasu</div>
+          <div class="person-role">Teknik tarafın sahibi, AI entegrasyon spec'inin yazarı.</div>
+          <ul>
+            <li>Backend issue'ları (Node, Express, PostgreSQL)</li>
+            <li>DeepSeek API entegrasyonu + prompt engineering</li>
+            <li>DB schema, API spec, ADR</li>
+            <li>Board view setup (sunumdan önce)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- §06 BUGÜN -->
+  <section class="section">
+    <div class="section-header">
+      <div><div class="section-number">§06 — Bugün (19 May)</div></div>
+      <h2 class="section-title">Son adım:<br>5 view ve <em>prova</em>.</h2>
+    </div>
+    <div class="section-content">
+      <p class="lead">Bugün sunum günü. Geri kalan iki şey var: Caner 5 view'ı kuracak (10-15 dk, web UI), sonra ikiniz birlikte 2 kere prova edeceksiniz. Hepsi 1 saat.</p>
+
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <div class="step-num">01</div>
+          <div class="step-name">Caner: 5 view</div>
+          <div class="step-detail">Sprint Board, Timeline, Master Backlog, By Assignee, PMBOK Phase. <a href="https://github.com/kaanzapkinus/brickly-project-plan/blob/main/docs/_internal/board-views-setup.md" target="_blank">Detaylı rehber</a>.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-num">02</div>
+          <div class="step-name">Prova</div>
+          <div class="step-detail">2 kez full run-through. Hedef 5:30-6:30. "Sunum" tab'ından oku.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-num">03</div>
+          <div class="step-name">Tab açma</div>
+          <div class="step-detail">Browser'da sıralı tablar: repo home → Timeline → PMBOK → Backlog → #14 → By Assignee → Charter → Post-mortem.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-num">04</div>
+          <div class="step-name">Sun</div>
+          <div class="step-detail">Kaan açar + cevaplar Q1, Q2, Q4. Caner 1.4, 1.5, Q3'ü.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-num">05</div>
+          <div class="step-name">Submit</div>
+          <div class="step-detail">LMS upload + hocaya email (repo + board linki).</div>
+        </div>
+      </div>
+
+      <p><strong>Eksik kalan tek elle iş:</strong> 5 view kurulumu. CLI desteklemiyor, web UI'da elle. Caner'in rehberi repo'da. Aşağıdaki linkten:</p>
+
+      <div class="link-block">
+        <a class="link-pill" href="https://github.com/kaanzapkinus/brickly-project-plan/blob/main/docs/_internal/board-views-setup.md" target="_blank">
+          <span class="pill-label">Caner için</span>
+          <span class="pill-value">Board Views Setup Guide</span>
+        </a>
+        <a class="link-pill" href="https://github.com/kaanzapkinus/brickly-project-plan/blob/main/NEXT_STEPS.md" target="_blank">
+          <span class="pill-label">Bugün için</span>
+          <span class="pill-value">NEXT_STEPS.md</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- §07 PLAN-ONLY NARRATIVE -->
+  <section class="section">
+    <div class="section-header">
+      <div><div class="section-number">§07 — Sunum Stratejisi</div></div>
+      <h2 class="section-title">Plan-only<br>tutarlı <em>hikaye</em>.</h2>
+    </div>
+    <div class="section-content">
+      <p>Hocaya verilecek tutarlı mesaj: "Bu bir IT PM dersi ödevi. Brickly seçilmiş vaka. 10 günlük executionun <strong>tam planını</strong> ürettik — charter, WBS, risk register, design specs, API specs, AI prompt design'ı. 25 execution issue'su 'Todo'da görünüyor — bu, kapsamı belirlenmiş, önceliklendirilmiş backlog. Birisi Brickly'yi inşa etmek isterse Issue #22'den başlayabilir. Plan, deliverable'ın kendisi."</p>
+
+      <p><strong>"Kod nerede?" sorusu gelirse:</strong> "Ödev metni 'create a full project plan' diyor, 'build the app' demiyor. Yarı bitmiş bir implementation, tam scoped bir plandan daha zayıf olurdu. Plan derinliğine öncelik verdik. Bu kararı 13 Mayıs mid-project review'da resmi olarak verdik — minutes <a href='https://github.com/kaanzapkinus/brickly-project-plan/blob/main/docs/reviews/2026-05-13-midproject.md' target='_blank'>repo'da</a>."</p>
+
+      <div class="pullquote">
+        Plan, ürünün öncesidir; ödev de planı ister, ürünü değil.
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p class="footer-quote">Charter'dan koda; sırasını bozma. Önce planla, sonra inşa et — bu sefer planda durduk.</p>
+    <div class="footer-sig">
+      <div class="footer-author">
+        <div class="footer-author-name">Brickly · 2026</div>
+        <div class="footer-author-detail">IT Project Management · Final Assignment</div>
+      </div>
+      <div class="footer-date">
+        <div>Sunum: 19 May 2026</div>
+        <div>Repo: github.com/kaanzapkinus/brickly-project-plan</div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--              TAB 2: SUNUM (sub-tabs)             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="tab-pane" data-pane="sunum">
+
+  <div class="sub-tabs-wrap">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-sub="caner">
+        <span class="sub-tab-num">A</span> Caner — Speaker Notes
+      </button>
+      <button class="sub-tab" data-sub="kaan">
+        <span class="sub-tab-num">B</span> Kaan — Speaker Notes
+      </button>
+      <button class="sub-tab" data-sub="public">
+        <span class="sub-tab-num">C</span> Sunum Ekranı
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--             SUB-PANE: CANER NOTES                -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="sub-pane active" data-sub-pane="caner">
+
+    <section class="hero">
+      <div class="hero-meta">
+        <div class="hero-meta-block">
+          <span class="lang-tr">Sunum Notları</span>
+          <span class="lang-en">Speaker Notes</span>
+          <span class="lang-tr">Caner için kişisel rehber</span>
+          <span class="lang-en">Personal guide for Caner</span>
+        </div>
+        <div class="hero-meta-block">
+          <span class="lang-tr">Toplam Süre</span>
+          <span class="lang-en">Total Time</span>
+          <span>~1:30 of 6:00</span>
+        </div>
+      </div>
+      <h1 class="hero-title">
+        <span class="lang-tr">Sen <em>üç</em> kısımda<br>konuşuyorsun.</span>
+        <span class="lang-en">You speak in <em>three</em><br>sections.</span>
+      </h1>
+      <p class="hero-subtitle">
+        <span class="lang-tr">Master Backlog walkthrough, bir issue açma, ve Q3 sorumluluk paylaşımı. Toplam 1.5 dakika. Diğer zamanlar Kaan konuşurken sahnedesin, board'a doğru bak, gülümse.</span>
+        <span class="lang-en">Master Backlog walkthrough, opening one issue, and Q3 on responsibility split. Total 1.5 minutes. Other times you're on stage while Kaan speaks — look at the board, smile.</span>
+      </p>
+    </section>
+
+    <!-- Caner section 1.4 -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§1.4 · 2:15 → 2:50</div>
+          <span class="speaker-time">35 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Master Backlog — <em>detayın yaşadığı yer</em>.</span>
+          <span class="lang-en">Master Backlog — <em>where the detail lives</em>.</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">Board üstte Master Backlog (Table view) açık. Yatay scroll yap, sütunları göster.</span>
+          <span class="lang-en">Master Backlog (Table view) open on screen. Scroll horizontally, show the columns.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Detayın yaşadığı yer burası. Her issue'da assignee, priority, saat cinsinden efor tahmini, faz, sprint ve due date var. Sadece başlıkları takip etmedik — yükü takip ettik. Bu görünümü faydalı kılan özel alan sütunları: bir tıkla priority'ye göre sıralayabilir, milestone'a göre gruplayabilir veya "gecikmiş olanları" filtreleyebilirim.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        This is where the detail lives. Every issue has an assignee, priority, effort estimate in hours, phase, sprint, and due date. We didn't just track titles — we tracked load. The custom-field columns are what makes this view useful: I can sort by priority, group by milestone, or filter to "everything overdue" with one click.
+      </div>
+      <p class="tip">Tip: en az 1 kez yatay scroll yap, Effort (hours) sütununu işaret et — "saatler birbiriyle dengeli" mesajı vermek için.</p>
+    </section>
+
+    <!-- Caner section 1.5 -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§1.5 · 2:50 → 3:30</div>
+          <span class="speaker-time">40 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Bir issue aç — <em>içinde ne var</em>.</span>
+          <span class="lang-en">Open one issue — <em>see what's inside</em>.</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">Issue <strong>#14 — DeepSeek API Research</strong>'a tıkla. (Alternatif: #12 Database Schema.) Description + acceptance criteria + labels + assignee + comments göster.</span>
+          <span class="lang-en">Click on issue <strong>#14 — DeepSeek API Research</strong>. (Alternative: #12 Database Schema.) Show description + acceptance criteria + labels + assignee + comments.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Bir issue açayım, içinde ne olduğunu göresiniz. Bu, DeepSeek API araştırma görevi. Her issue aynı yapıda: işi çerçeveleyen bir açıklama, "yapıldı" tanımı olarak acceptance criteria checklist'i, type/priority/phase'i gösteren label'lar, milestone, assignee ve efor tahmini. Aşağıdaki yorumlar — onlar bizim gerçek çalışma notlarımız. Board'u boş yer tutucularla doldurmadık.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        Let me open one issue so you see what's inside. This is the DeepSeek API research task. Every issue has the same structure: a description that frames the work, acceptance criteria as a checklist that's the definition of done, labels showing type and priority and phase, milestone, assignee, and effort estimate. The comments below — those are our actual working notes. We didn't fill the board with empty placeholders.
+      </div>
+      <p class="tip">Tip: acceptance criteria checklist'ini gözle takip et, parmağınla şu kelimeleri vurgula: "definition of done". Sonra geri Master Backlog veya By Assignee'ye dön.</p>
+    </section>
+
+    <!-- Caner section Q3 -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§Q3 · 4:50 → 5:20</div>
+          <span class="speaker-time">30 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Q3 — <em>Sorumluluk</em> paylaşımı.</span>
+          <span class="lang-en">Q3 — <em>How</em> we divided work.</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">By Assignee view'a geç (eğer farklı bir view'daysan). 2 sütun yan yana: kaanzapkinus + Canerakcasu. Konuşurken hangi sütunda hangi tür issue olduğunu göster.</span>
+          <span class="lang-en">Switch to By Assignee view (if you're on a different one). Two columns side by side: kaanzapkinus + Canerakcasu. While speaking, show which type of issues are in which column.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        İşi eşit değil, güce göre böldük. Kaan tasarım da yapmış bir frontend geliştirici — UI, Figma, gamification görselleri ve proje yönetimi onda. Ben backend'de daha rahatım — Node, Postgres, DeepSeek entegrasyonu ve test bende. İki tarafı kesen şeyleri ortak sahipleniyoruz: charter, risk register, WBS, sunum. Charter'da açık bir kural var: saatler birbirinin %15'i içinde kalmak zorunda. KPI dokümanında haftalık takip ettik. Bu bölünme işe yaradı çünkü herhangi bir teknik karar vermeden önce güçlü yönlerimizi biliyorduk.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        We split by strength, not equally. Kaan is a frontend developer who's done design work — so he owns UI, Figma, gamification visuals, and project management. I'm more comfortable in backend — so I own Node, Postgres, the DeepSeek integration, and testing. We co-own anything that crosses both sides: the charter, the risk register, the WBS, the presentation. The charter has an explicit rule: hours must stay within 15% of each other. We tracked that in the KPI document weekly. The split worked because we knew our strengths before we made any technical commitments.
+      </div>
+      <p class="tip">Tip: "we knew our strengths before we made any technical commitments" cümlesini yavaşça söyle — bu en güçlü cümlen. Sonra Kaan Q4'e geçecek.</p>
+    </section>
+
+    <!-- Caner closing role -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§Q4 · 5:20 → 6:00</div>
+          <span class="speaker-time">opsiyonel</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Q4 destek — <em>AI cümlesi</em> (vakit varsa).</span>
+          <span class="lang-en">Q4 backup — <em>AI sentence</em> (if time allows).</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">Kaan Q4 challenges'da AI unpredictability hakkında konuştuktan sonra, eğer kalan vakit varsa 1 cümle ile destekle. Yoksa konuşma.</span>
+          <span class="lang-en">After Kaan covers Q4 challenges and mentions AI unpredictability, if time allows, add one sentence. Otherwise stay silent.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Kısa ekleme: DeepSeek'in malformed JSON döndürme oranı testlerimizde 1/12'ydi. Bu yüzden iki aşamalı doğrulama spec'i yazdık — birinci Zod validation, başarısız olursa bir kere daha katı bir prompt ile retry. Implementation bu spec'i izleyecek.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        Short addition: DeepSeek's malformed-JSON rate was 1 in 12 in our tests. So we spec'd a two-stage validation — first Zod schema validation, on failure retry once with a stricter prompt. Implementation will follow that spec.
+      </div>
+      <p class="tip">Tip: Bu opsiyonel. Kaan'ın Q4 cevabı 40 sn altı kaldıysa söyle. 50 sn üstüne çıktıysa sessiz kal, sürenizi koruyun.</p>
+    </section>
+
+    <!-- Caner pre-flight -->
+    <section class="speaker-section" style="background: var(--paper-warm); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">Pre-flight</div>
+          <span class="speaker-time">Sınıftan önce</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Senin <em>kişisel</em> kontrol listen.</span>
+          <span class="lang-en">Your <em>personal</em> checklist.</span>
+        </h2>
+      </div>
+      <div style="max-width: 900px; margin-left: auto;">
+        <ul class="checklist lang-tr">
+          <li><strong>5 view kuruldu mu?</strong> <a href="https://github.com/kaanzapkinus/brickly-project-plan/blob/main/docs/_internal/board-views-setup.md" target="_blank">Rehberi</a> izleyerek tamamla. Bittiğinde Kaan'a yaz.</li>
+          <li>Bu sayfanın iki dilini de bir kere oku. EN versiyonu daha pürüzsüz konuşman için.</li>
+          <li>Bilgisayar şarjda mı? Adapter çantanda mı?</li>
+          <li>Sahne sıralaman: 1.4 Master Backlog → 1.5 Bir issue → Q3 By Assignee.</li>
+          <li>Kaan konuşurken board'a doğru bak, sessiz kal, ekrana dokunma.</li>
+          <li>Q3'te kendi cümleni Kaan'dan ALIYORSUN. Sıraya dikkat.</li>
+        </ul>
+        <ul class="checklist lang-en">
+          <li><strong>Are the 5 views set up?</strong> Follow <a href="https://github.com/kaanzapkinus/brickly-project-plan/blob/main/docs/_internal/board-views-setup.md" target="_blank">the guide</a>. Message Kaan when done.</li>
+          <li>Read both language versions of this page once. EN version helps you speak smoother.</li>
+          <li>Laptop charged? Adapter packed?</li>
+          <li>Your section order: 1.4 Master Backlog → 1.5 Open an issue → Q3 By Assignee.</li>
+          <li>While Kaan speaks, look at the board, stay quiet, don't touch the screen.</li>
+          <li>On Q3, you TAKE OVER from Kaan. Watch the handoff.</li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--              SUB-PANE: KAAN NOTES                -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="sub-pane" data-sub-pane="kaan">
+
+    <section class="hero">
+      <div class="hero-meta">
+        <div class="hero-meta-block">
+          <span class="lang-tr">Sunum Notları</span>
+          <span class="lang-en">Speaker Notes</span>
+          <span class="lang-tr">Kaan için kişisel rehber</span>
+          <span class="lang-en">Personal guide for Kaan</span>
+        </div>
+        <div class="hero-meta-block">
+          <span class="lang-tr">Toplam Süre</span>
+          <span class="lang-en">Total Time</span>
+          <span>~4:30 of 6:00</span>
+        </div>
+      </div>
+      <h1 class="hero-title">
+        <span class="lang-tr">Ana <em>konuşmacı</em><br>sensin.</span>
+        <span class="lang-en">You're the <em>lead</em><br>speaker.</span>
+      </h1>
+      <p class="hero-subtitle">
+        <span class="lang-tr">Açılış, tool walkthrough'un büyük kısmı, Q1, Q2, Q4 ve kapanış sende. Toplam ~4.5 dakika. Sahne yönetimi de senin — view'lar arası geçişi sen yapacaksın.</span>
+        <span class="lang-en">Opening, most of the tool walkthrough, Q1, Q2, Q4, and closing are yours. Total ~4.5 minutes. Stage direction is also yours — you switch between views.</span>
+      </p>
+    </section>
+
+    <!-- Kaan section 0 OPENING -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§0 · 0:00 → 0:20</div>
+          <span class="speaker-time">20 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Açılış — <em>biz kimiz</em>, ne yaptık.</span>
+          <span class="lang-en">Opening — <em>who we are</em>, what we did.</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">Repo home sayfası açık. <code>github.com/kaanzapkinus/brickly-project-plan</code>. Kameraya değil, biraz sola bak (hocayı görmek için), Caner sağında.</span>
+          <span class="lang-en">Repo home page open. <code>github.com/kaanzapkinus/brickly-project-plan</code>. Look slightly left (to see the instructor), Caner on your right.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Merhaba. Biz Kaan ve Caner. Projemiz Brickly — AI destekli bir to-do app. Sorunu çok görevi olan değil, görevleri başlayamayacak kadar büyük olan insanlar için. Brickly'yi 10 günde teslim etmek üzere GitHub Projects ile planladık; size nasıl yaptığımızı göstereceğiz.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        Good morning. We're Kaan and Caner, and our project is Brickly — an AI-powered to-do app for people whose problem isn't that they have too many tasks, but that their tasks are too big to start. We planned a 10-day delivery of Brickly using GitHub Projects, and we'll walk you through how.
+      </div>
+    </section>
+
+    <!-- Kaan 1.1 -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§1.1 · 0:20 → 1:00</div>
+          <span class="speaker-time">40 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Neden <em>GitHub Projects</em>?</span>
+          <span class="lang-en">Why <em>GitHub Projects</em>?</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">Repo'da bir kısa süre dur, sonra Project Board → Timeline view'a geç (sonraki sectionun preview'u).</span>
+          <span class="lang-en">Stay on repo briefly, then switch to Project Board → Timeline view (preview of next section).</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        GitHub Projects'i dört nedenle seçtik. Birincisi, projemiz bir yazılım projesi ve GitHub kodun zaten yaşadığı yer — issue, commit ve pull request otomatik bağlanıyor. İkincisi, Microsoft ve Meta gibi şirketlerde endüstri standardı; portföy değeri var. Üçüncüsü, ücretsiz ve özellikler kısıtlı değil. Dördüncüsü — ki bu ders için kritik — ödevde istenen her şeyi destekliyor: milestone'lar, alt görevler, özel alanlar, çoklu görünümler, bağımlılıklar. Trello veya Asana da işe yarardı ama sonunda durum bilgisini board'dan Git'e taşımak zorunda kalırdık. İşimizin yaşadığı yerde olan aracı seçtik.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        We picked GitHub Projects for four reasons. First, our project is software, and GitHub is where the code already lives — issues, commits, and pull requests are linked automatically. Second, this is the industry standard at companies like Microsoft and Meta; learning it has portfolio value. Third, it's free with no feature gates. Fourth — and importantly for this class — GitHub Projects supports everything the assignment asked for: milestones, sub-issues, custom fields, multiple views, dependencies. Trello and Asana would have worked, but they would have meant copying status from a board into Git anyway. We picked the tool that lives where our work lives.
+      </div>
+    </section>
+
+    <!-- Kaan 1.2 Timeline -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§1.2 · 1:00 → 1:45 · HERO</div>
+          <span class="speaker-time">45 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Timeline view — <em>planın görsel kalbi</em>.</span>
+          <span class="lang-en">Timeline view — <em>the visual heart</em>.</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">Timeline / Gantt view açık. 5 renkli band görünüyor. Bu sunumun en önemli görsel anı. Yavaş yavaş konuş, fareyle bandların üstünden geç.</span>
+          <span class="lang-en">Timeline / Gantt view open. 5 colored bands visible. The hero moment of the presentation. Speak slowly, move the mouse across the bands.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Bu, Timeline görünümümüz — planın görsel kalbi. Beş renkli bant, PMBOK'un beş fazını gösteriyor: Initiation kırmızı, Planning sarı, Execution yeşil, Monitoring &amp; Control mavi tüm proje boyunca süren bir bant, ve Closure mor en sonda. Çubuklar tek tek issue'lar. Her çubuğun uzunluğu efor tahmini, rengi fazına göre. Execution'ın işin büyük çoğunluğu olduğunu hemen görebiliyorsunuz — 25 issue, 5 gün. Monitoring &amp; Control'un da bilerek sürekli olduğunu, tek seferlik bir etkinlik olmadığını gösteriyor.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        This is our Timeline view — the visual heart of the plan. The five colored bands are the five PMBOK phases: Initiation in red, Planning in yellow, Execution in green, Monitoring &amp; Control in blue running across the whole project, and Closure in purple at the end. The bars are individual issues. Each bar's length is its effort estimate, and the color matches its phase. You can see at a glance that Execution is the bulk of the work — 25 issues across five days — and that Monitoring &amp; Control is deliberately continuous, not a single end-of-project event.
+      </div>
+      <p class="tip">Tip: bu sunumun "hero shot"u. Yavaş geç. Fareyle bandların altını çiz. Hoca buna bakacak.</p>
+    </section>
+
+    <!-- Kaan 1.3 -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§1.3 · 1:45 → 2:15</div>
+          <span class="speaker-time">30 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">PMBOK Phase view — <em>framework alignment</em>.</span>
+          <span class="lang-en">PMBOK Phase view — <em>framework alignment</em>.</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">PMBOK Phase view'a geç. 5 sütun: Initiation, Planning, Execution, Monitoring, Closure.</span>
+          <span class="lang-en">Switch to PMBOK Phase view. 5 columns: Initiation, Planning, Execution, Monitoring, Closure.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Aynı veriler, farklı açıdan. PMBOK Phase görünümü, issue'ları ders kitabındaki beş sütuna göre gruplandırıyor. Bu görünümü hiçbir scope öğesinin fazlar arasında düşmediğini kontrol etmek için kullanıyoruz. Initiation kolonunda temel artefaktlar var — charter, stakeholder register, risk register. Planning'de scope, WBS, tasarım ve mimari. Execution'da inşa. Monitoring &amp; Control paralel akıyor — daha az issue olmasının sebebi her birinin uzun süren takip aktivitesi olması. Closure ise post-mortem ve bu sunumla bitiyor.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        Same data, different angle. The PMBOK Phase view groups issues into the five columns from the textbook. We use this view to check that no scope item falls between phases. The Initiation column has the foundational artifacts — charter, stakeholder register, risk register. Planning has scope, WBS, design, and architecture. Execution is build. Monitoring &amp; Control runs in parallel — you can see it has fewer issues because each is a long-running tracking activity, not a one-off task. Closure ends with the post-mortem and this very presentation.
+      </div>
+      <p class="tip">Tip: bittiğinde Caner'e geç. "Caner, Master Backlog'u aç" gibi belli bir cümle de söyleyebilirsin. Sahne Caner'in.</p>
+    </section>
+
+    <!-- Skip 1.4 1.5 - Caner -->
+    <section class="speaker-section" style="background: var(--paper-warm);">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§1.4 + §1.5</div>
+          <span class="speaker-time">Caner konuşuyor</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Caner devralıyor — <em>sen sessiz kal</em>.</span>
+          <span class="lang-en">Caner takes over — <em>stay silent</em>.</span>
+        </h2>
+      </div>
+      <div style="max-width: 900px; margin-left: auto; font-size: 16px; line-height: 1.65; color: var(--ink-soft);">
+        <p class="lang-tr">2:15 — 3:30 arası Caner'in. Master Backlog walkthrough + bir issue açma. Sen sahnedesin ama konuşmuyorsun. Board'a doğru bak, gülümse, gerekirse mouse'u Caner'e bırak.</p>
+        <p class="lang-en">From 2:15 to 3:30 is Caner's. Master Backlog walkthrough + opening an issue. You're on stage but silent. Look at the board, smile, hand the mouse over if needed.</p>
+      </div>
+    </section>
+
+    <!-- Kaan 1.6 -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§1.6 · 3:30 → 4:00</div>
+          <span class="speaker-time">30 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">By Assignee — <em>kim ne yapıyor</em>.</span>
+          <span class="lang-en">By Assignee — <em>who does what</em>.</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">By Assignee view'a geç. 2 sütun: kaanzapkinus + Canerakcasu. Mouse'u tekrar al.</span>
+          <span class="lang-en">Switch to By Assignee view. 2 columns: kaanzapkinus + Canerakcasu. Take the mouse back.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Bu görünüm "işi nasıl böldünüz" sorusunu tek ekranda cevaplıyor. Kaan'ın sütunu frontend, tasarım ve proje yönetimi; Caner'in sütunu backend, AI entegrasyonu ve QA. Saatlerin dengeli olduğunu mid-project review'da kontrol ettik — şu an Kaan 47 saat, Caner 43 saat. Charter'ımızdaki ±%15 kuralı içinde.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        This view answers "how did you divide the work" in one screen. Kaan's column is frontend, design, and project management; Caner's column is backend, AI integration, and QA. We checked at the mid-project review that the hours were balanced — at the time of recording, Kaan is at 47 hours, Caner is at 43. That's within our charter's ±15% rule.
+      </div>
+    </section>
+
+    <!-- Kaan Q1 recap -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§Q1 · 4:00 → 4:15</div>
+          <span class="speaker-time">15 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Q1 özet — <em>tool seçimi</em>.</span>
+          <span class="lang-en">Q1 recap — <em>tool choice</em>.</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">By Assignee'de kal, kısa özet.</span>
+          <span class="lang-en">Stay on By Assignee view; quick recap.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Araç seçimini özetlersek: GitHub Projects çünkü projemiz yazılım, araç ücretsiz ve endüstri standardı, ödevin tüm gereksinimlerini karşılıyor ve önemlisi, Trello seçen takımlardan farklılaştırdı bizi — çoğu takım bildikleri aracı seçti; biz uygun olanı seçtik.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        To recap on tool choice: GitHub Projects because our project is software, the tool is free and industry-standard, it satisfies every assignment requirement, and crucially it differentiated us from teams that picked Trello — most teams went for what they knew; we went for what fit.
+      </div>
+    </section>
+
+    <!-- Kaan Q2 -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§Q2 · 4:15 → 4:50</div>
+          <span class="speaker-time">35 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Q2 — <em>nasıl planladık</em>?</span>
+          <span class="lang-en">Q2 — <em>how we planned</em>?</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">PROJECT_CHARTER.md aç. SMART objectives bölümüne scroll yap.</span>
+          <span class="lang-en">Open PROJECT_CHARTER.md. Scroll to SMART objectives section.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Planlamamız ders materyalindeki PMBOK 5 faz modelini takip etti. 1. gün Initiation: önce charter, stakeholder register, risk register ve communication plan'i yazdık — herhangi teknik bir şeyden önce. 2-4. günler Planning: scope statement, work breakdown structure, user personas, wireframes, veritabanı şeması, API spec ve design system. 5-9. günler Execution. 10. gün Closure. Monitoring &amp; Control her şey boyunca paralel. Ekrandaki charter'da 5 SMART hedefimiz var — Specific, Measurable, Achievable, Relevant, Time-bound. Her hedefin bir sayısı var. Faz 4 bunlara karşı ölçüm yapıyor.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        Our planning followed the PMBOK 5-phase model from the course material. Day 1 was Initiation: we wrote the charter, stakeholder register, risk register, and communication plan first — before anything technical. Days 2 to 4 were Planning: scope statement, work breakdown structure, user personas, wireframes, database schema, API spec, and the design system. Days 5 to 9 were Execution. Day 10 is Closure. Monitoring &amp; Control runs continuously through it all. The charter — visible on screen — has 5 SMART objectives. Specific, measurable, achievable, relevant, time-bound. Every objective has a number attached. That's what Phase 4 measures against.
+      </div>
+    </section>
+
+    <!-- Q3 - Caner -->
+    <section class="speaker-section" style="background: var(--paper-warm);">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§Q3</div>
+          <span class="speaker-time">Caner konuşuyor</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Q3 — Caner devralıyor.</span>
+          <span class="lang-en">Q3 — Caner takes over.</span>
+        </h2>
+      </div>
+      <div style="max-width: 900px; margin-left: auto; font-size: 16px; line-height: 1.65; color: var(--ink-soft);">
+        <p class="lang-tr">By Assignee view'a geri dön. Mikrofonu Caner'e bırak. Sen yine sessiz kal, board'a doğru bak.</p>
+        <p class="lang-en">Switch back to By Assignee view. Hand the mic to Caner. Stay silent, look at the board.</p>
+      </div>
+    </section>
+
+    <!-- Kaan Q4 -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§Q4 · 5:20 → 6:00</div>
+          <span class="speaker-time">40 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Q4 — <em>zorluklar</em>.</span>
+          <span class="lang-en">Q4 — <em>challenges</em>.</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">POST_MORTEM.md aç (eğer hazırsa). Yoksa By Assignee'de kal.</span>
+          <span class="lang-en">Open POST_MORTEM.md (if available). Otherwise stay on By Assignee.</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Planlamada üç gerçek zorluk. Birincisi — scope disiplini. AI özellikleri sürekli daha fazlasını davet ediyor: ses girişi, takvim senkronu, sosyal streak. Her birini değerlendirip out-of-scope listesine kısa gerekçeyle yazdık. Bu liste can simidi oldu — biri haftanın ortasında yeni özellik önerdiğinde önce listeye baktık. İkincisi — AI öngörülemezliği için tasarım yapmak. Araştırmadan biliyorduk ki DeepSeek bazen bozuk JSON döndürüyor. Umut etmek yerine, prompt spec'ine iki aşamalı doğrulama + retry ekledik ve bunu mitigation'lı bir risk olarak kayda geçirdik. Üçüncüsü — program gerçekçiliği. Caner'in 2. haftadaki sınavı sürpriz değil, bilinen bir kısıt. Plan onun yüksek öncelikli backend issue'larını 5. ve 6. günlere öne çekiyor, 9. günde buffer var. Program iyimser değil; provadan geçirilmiş.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        Three real challenges in planning. First — scope discipline. AI features tempt you to keep adding: voice input, calendar sync, social streaks. Each one we considered, we wrote into the out-of-scope list with a one-line rationale. That list became our lifeboat — when either of us suggested a new feature mid-week, we checked the list first. Second — designing for AI unpredictability. From research we learned DeepSeek occasionally returns malformed JSON. Rather than hoping, we designed a two-stage validation layer plus retry into the prompt spec, and added it as a risk with mitigation. Third — schedule realism. Caner has a mid-week exam in Week 2 — a known constraint, not a surprise. The plan front-loads his high-priority backend issues to Days 5 and 6, with a buffer on Day 9. The schedule isn't optimistic; it's rehearsed.
+      </div>
+    </section>
+
+    <!-- Closing -->
+    <section class="speaker-section">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">§Kapanış · 6:00 → 6:30</div>
+          <span class="speaker-time">30 sn</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Kapanış — <em>ne öğrendik</em>.</span>
+          <span class="lang-en">Closing — <em>what we'd change</em>.</span>
+        </h2>
+      </div>
+      <div class="stage">
+        <span class="stage-label">Sahne</span>
+        <span class="stage-desc">
+          <span class="lang-tr">Timeline view'a geri dön — son görsel olarak. "Thank you" söyle.</span>
+          <span class="lang-en">Switch back to Timeline view as the final image. Say "Thank you".</span>
+        </span>
+      </div>
+      <div class="script tr lang-tr">
+        <span class="script-lang-label">TR</span>
+        Bu planlama döngüsünü tekrar yapsak iki şeyi değiştirirdik. Birincisi, 1. günden planlama burn-down chart'ı eklerdik — kalan planlama artefaktı vs gün. İlerleyişi hisle takip ettik, eğriyle değil. İkincisi, en belirsiz iş olan AI prompt tasarımını 3. gün yerine 1. veya 2. güne çekerdik. En riskli iş önce gelmeli. En çok işe yarayan şey: herhangi bir teknik karar vermeden önce charter yazmak. 1. günde yavaş hissettiriyor. 4. günde tekrar planlamamızı önledi. Teşekkürler — sorularınızı almaya hazırız.
+      </div>
+      <div class="script en lang-en">
+        <span class="script-lang-label">EN</span>
+        If we ran this planning cycle again, two things we'd change. First, we'd add a planning burn-down chart from Day 1 — remaining planning artifacts versus day. We tracked progress by feeling, not by a curve. Second, we'd move the highest-uncertainty research — the AI prompt design — to Day 1 or 2 instead of Day 3. Highest-risk work should go first. The biggest thing that worked: writing the charter before any technical commitment. It feels slow on Day 1. It saved us from re-planning on Day 4. Thank you — we're happy to take questions.
+      </div>
+    </section>
+
+    <!-- Stage cheat sheet -->
+    <section class="speaker-section" style="background: var(--paper-warm); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);">
+      <div class="speaker-meta">
+        <div>
+          <div class="speaker-tag">Cheat Sheet</div>
+          <span class="speaker-time">Laptop kapağına yapıştır</span>
+        </div>
+        <h2 class="speaker-title">
+          <span class="lang-tr">Sahne <em>direktifleri</em>.</span>
+          <span class="lang-en">Stage <em>directions</em>.</span>
+        </h2>
+      </div>
+      <div style="max-width: 900px; margin-left: auto;">
+        <pre style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.9; background: var(--ink); color: var(--paper); padding: 24px; border-radius: 4px; overflow-x: auto;">
+00:00 → Repo home
+00:20 → Timeline view (HERO)
+01:45 → PMBOK Phase view
+02:15 → Caner takes mic (Master Backlog)
+02:50 → Caner (open issue #14)
+03:30 → BACK: By Assignee view
+04:15 → Stay (Q1 recap)
+04:15 → PROJECT_CHARTER.md → SMART
+04:50 → BACK: By Assignee, Caner mic
+05:20 → POST_MORTEM.md (or By Assignee)
+06:00 → Timeline view (final image)
+06:30 → Thank you</pre>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--           SUB-PANE: PUBLIC (audience)            -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="sub-pane" data-sub-pane="public">
+
+    <section class="hero">
+      <div class="hero-meta">
+        <div class="hero-meta-block">
+          <span>IT Project Management</span>
+          <span class="lang-tr">Final Sunum · 19 Mayıs 2026</span>
+          <span class="lang-en">Final Presentation · 19 May 2026</span>
+        </div>
+        <div class="hero-meta-block">
+          <span class="lang-tr">Takım</span>
+          <span class="lang-en">Team</span>
+          <span>Kaan Yazıcıoğlu · Caner Akcasu</span>
+        </div>
+        <div class="hero-meta-block">
+          <span>WSB Merito Wrocław</span>
+          <span>SD1</span>
+        </div>
+      </div>
+      <h1 class="hero-title">
+        <span class="lang-tr">Brickly — <em>plan</em><br>ürünün öncesidir.</span>
+        <span class="lang-en">Brickly — <em>plan</em><br>before product.</span>
+      </h1>
+      <p class="hero-subtitle">
+        <span class="lang-tr">10 iş günü. 55 issue. 5 PMBOK fazı. Brickly bir AI to-do app vakası; biz bu uygulamanın tam projesini GitHub Projects üzerinde planladık. Bu sunum, planın kendisidir.</span>
+        <span class="lang-en">10 working days. 55 issues. 5 PMBOK phases. Brickly is an AI to-do app case study; we planned its full project on GitHub Projects. This presentation is the plan itself.</span>
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-label">
+            <span class="lang-tr">Issue</span>
+            <span class="lang-en">Issues</span>
+          </div>
+          <div class="hero-stat-value">55<span class="unit">total</span></div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">
+            <span class="lang-tr">Milestone</span>
+            <span class="lang-en">Milestones</span>
+          </div>
+          <div class="hero-stat-value">5<span class="unit">PMBOK</span></div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">
+            <span class="lang-tr">Doküman</span>
+            <span class="lang-en">Documents</span>
+          </div>
+          <div class="hero-stat-value">13<span class="unit">in docs/</span></div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">
+            <span class="lang-tr">İş günü</span>
+            <span class="lang-en">Working days</span>
+          </div>
+          <div class="hero-stat-value">10<span class="unit">May 5-18</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public §01 Why this tool -->
+    <section class="section">
+      <div class="section-header">
+        <div><div class="section-number">§01 — Tool</div></div>
+        <h2 class="section-title">
+          <span class="lang-tr">Neden <em>GitHub</em><br>Projects?</span>
+          <span class="lang-en">Why <em>GitHub</em><br>Projects?</span>
+        </h2>
+      </div>
+      <div class="card-grid">
+        <div class="feature-card">
+          <span class="key">01</span>
+          <div class="name">
+            <span class="lang-tr">Doğal yer</span>
+            <span class="lang-en">Native habitat</span>
+          </div>
+          <p class="desc">
+            <span class="lang-tr">Yazılım projesi GitHub'da yaşar. Issue, commit, PR otomatik bağlanıyor — board'dan Git'e veri kopyalama yok.</span>
+            <span class="lang-en">Software projects live on GitHub. Issues, commits, PRs link automatically — no copying data from board to Git.</span>
+          </p>
+        </div>
+        <div class="feature-card">
+          <span class="key">02</span>
+          <div class="name">
+            <span class="lang-tr">Endüstri standardı</span>
+            <span class="lang-en">Industry standard</span>
+          </div>
+          <p class="desc">
+            <span class="lang-tr">Microsoft, Meta, Netflix kullanıyor. Öğrenmek portfolyo değerli. Trello'yu öğrenmek de değerli ama farklı bir piyasaya.</span>
+            <span class="lang-en">Microsoft, Meta, Netflix use it. Learning it has portfolio value. Trello is valuable too, but for a different market.</span>
+          </p>
+        </div>
+        <div class="feature-card">
+          <span class="key">03</span>
+          <div class="name">
+            <span class="lang-tr">Ücretsiz, tam</span>
+            <span class="lang-en">Free, no gates</span>
+          </div>
+          <p class="desc">
+            <span class="lang-tr">Public repolarda her özellik açık. Milestone, custom field, view, automation — hiçbir paywall yok.</span>
+            <span class="lang-en">Every feature open on public repos. Milestones, custom fields, views, automation — no paywall.</span>
+          </p>
+        </div>
+        <div class="feature-card">
+          <span class="key">04</span>
+          <div class="name">
+            <span class="lang-tr">Ödevi karşılar</span>
+            <span class="lang-en">Meets the brief</span>
+          </div>
+          <p class="desc">
+            <span class="lang-tr">Milestones, sub-issues, custom fields, multiple views, dependencies — ödevdeki her bir madde destekleniyor.</span>
+            <span class="lang-en">Milestones, sub-issues, custom fields, multiple views, dependencies — every assignment requirement supported.</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public §02 PMBOK phases -->
+    <section class="section">
+      <div class="section-header">
+        <div><div class="section-number">§02 — Framework</div></div>
+        <h2 class="section-title">
+          <span class="lang-tr">PMBOK 5 faz —<br>her şey <em>yerli yerinde</em>.</span>
+          <span class="lang-en">PMBOK 5 phases —<br>everything <em>in place</em>.</span>
+        </h2>
+      </div>
+      <div class="section-content">
+        <p class="lead">
+          <span class="lang-tr">Plan, ders materyalindeki PMBOK 5 faz modelini birebir takip eder. Her faz bir milestone, her milestone bir tarih ufkuna sahip.</span>
+          <span class="lang-en">The plan follows the PMBOK 5-phase model from course material 1:1. Each phase is a milestone with a date horizon.</span>
+        </p>
+      </div>
+      <div class="phase-band">
+        <div class="phase-row phase-1">
+          <div class="phase-num">1</div>
+          <div class="phase-name">Initiation</div>
+          <div class="phase-detail">
+            <span class="lang-tr">Charter, stakeholder &amp; risk register, communication plan, board kurulumu.</span>
+            <span class="lang-en">Charter, stakeholder &amp; risk register, communication plan, board setup.</span>
+          </div>
+          <div class="phase-dates">5 May<br>6 issue</div>
+        </div>
+        <div class="phase-row phase-2">
+          <div class="phase-num">2</div>
+          <div class="phase-name">Planning</div>
+          <div class="phase-detail">
+            <span class="lang-tr">Scope, WBS, persona, wireframe, mockup, design system, DB schema, API spec, prompt templates, ADR.</span>
+            <span class="lang-en">Scope, WBS, personas, wireframes, mockups, design system, DB schema, API spec, prompt templates, ADR.</span>
+          </div>
+          <div class="phase-dates">6-8 May<br>15 issue</div>
+        </div>
+        <div class="phase-row phase-3">
+          <div class="phase-num">3</div>
+          <div class="phase-name">Execution</div>
+          <div class="phase-detail">
+            <span class="lang-tr">Frontend &amp; backend, auth, CRUD, AI integration, Q&amp;A UI, gamification. <strong>Plan-only kapsamında backlog'ta.</strong></span>
+            <span class="lang-en">Frontend &amp; backend, auth, CRUD, AI integration, Q&amp;A UI, gamification. <strong>In backlog for plan-only scope.</strong></span>
+          </div>
+          <div class="phase-dates">11-15 May<br>25 issue</div>
+        </div>
+        <div class="phase-row phase-4">
+          <div class="phase-num">4</div>
+          <div class="phase-name">Monitoring &amp; Control</div>
+          <div class="phase-detail">
+            <span class="lang-tr">KPI tracking, mid-project review, schedule variance analysis, code standards.</span>
+            <span class="lang-en">KPI tracking, mid-project review, schedule variance analysis, code standards.</span>
+          </div>
+          <div class="phase-dates">
+            <span class="lang-tr">paralel<br>4 issue</span>
+            <span class="lang-en">parallel<br>4 issue</span>
+          </div>
+        </div>
+        <div class="phase-row phase-5">
+          <div class="phase-num">5</div>
+          <div class="phase-name">Closure</div>
+          <div class="phase-detail">
+            <span class="lang-tr">E2E test &amp; deployment (backlog), post-mortem, presentation prep, dry-run.</span>
+            <span class="lang-en">E2E test &amp; deployment (backlog), post-mortem, presentation prep, dry-run.</span>
+          </div>
+          <div class="phase-dates">18 May<br>5 issue</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public stats band -->
+    <section class="stat-band">
+      <div class="stat-band-inner">
+        <div class="stat-block">
+          <div class="stat-label">
+            <span class="lang-tr">Planlama issue'su</span>
+            <span class="lang-en">Planning issues</span>
+          </div>
+          <div class="stat-value"><em>28</em></div>
+          <div class="stat-sub">
+            <span class="lang-tr">closed — tüm artefaktlar üretildi</span>
+            <span class="lang-en">closed — all artifacts produced</span>
+          </div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">
+            <span class="lang-tr">Execution backlog</span>
+            <span class="lang-en">Execution backlog</span>
+          </div>
+          <div class="stat-value"><em>27</em></div>
+          <div class="stat-sub">
+            <span class="lang-tr">scoped + estimated, hazır</span>
+            <span class="lang-en">scoped + estimated, ready</span>
+          </div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">
+            <span class="lang-tr">Label</span>
+            <span class="lang-en">Labels</span>
+          </div>
+          <div class="stat-value"><em>18</em></div>
+          <div class="stat-sub">
+            type / priority / phase / status
+          </div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">
+            <span class="lang-tr">Custom field</span>
+            <span class="lang-en">Custom fields</span>
+          </div>
+          <div class="stat-value"><em>5</em></div>
+          <div class="stat-sub">
+            Priority · Effort · Phase · Sprint · Due Date
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public §03 Team -->
+    <section class="section">
+      <div class="section-header">
+        <div><div class="section-number">§03 — Team</div></div>
+        <h2 class="section-title">
+          <span class="lang-tr">Güce göre,<br><em>eşit değil</em>.</span>
+          <span class="lang-en">By strength,<br><em>not equally</em>.</span>
+        </h2>
+      </div>
+      <div class="section-content">
+        <p class="lead">
+          <span class="lang-tr">Charter kuralı: ±%15 saat dengesi. Şu anki oran 1.05. KPI dokümanında haftalık takip edildi.</span>
+          <span class="lang-en">Charter rule: ±15% effort balance. Current ratio is 1.05. Tracked weekly in the KPI doc.</span>
+        </p>
+      </div>
+      <div class="team-grid">
+        <div class="team-card kaan">
+          <span class="role-tag">PM · Frontend · Design</span>
+          <h3 class="person-name">Kaan <em>Yazıcıoğlu</em></h3>
+          <div class="person-id">SD1 · 97364 · @kaanzapkinus</div>
+          <div class="person-role">
+            <span class="lang-tr">Plan'ın sahibi, board'un mimarı.</span>
+            <span class="lang-en">Plan owner, board architect.</span>
+          </div>
+          <ul>
+            <li>
+              <span class="lang-tr">Koordinasyon + board yönetimi</span>
+              <span class="lang-en">Coordination + board management</span>
+            </li>
+            <li>
+              <span class="lang-tr">UI/UX, Figma, gamification görselleri</span>
+              <span class="lang-en">UI/UX, Figma, gamification visuals</span>
+            </li>
+            <li>
+              <span class="lang-tr">Frontend issue'ları</span>
+              <span class="lang-en">Frontend issues</span>
+            </li>
+            <li>
+              <span class="lang-tr">Charter, post-mortem, sunum</span>
+              <span class="lang-en">Charter, post-mortem, presentation</span>
+            </li>
+          </ul>
+        </div>
+        <div class="team-card caner">
+          <span class="role-tag">Backend · AI · QA</span>
+          <h3 class="person-name">Caner <em>Akcasu</em></h3>
+          <div class="person-id">SD1 · 97334 · @Canerakcasu</div>
+          <div class="person-role">
+            <span class="lang-tr">Teknik tarafın sahibi, AI spec'in yazarı.</span>
+            <span class="lang-en">Technical owner, AI spec author.</span>
+          </div>
+          <ul>
+            <li>
+              <span class="lang-tr">Backend issue'ları</span>
+              <span class="lang-en">Backend issues</span>
+            </li>
+            <li>
+              <span class="lang-tr">DeepSeek entegrasyonu + prompt engineering</span>
+              <span class="lang-en">DeepSeek integration + prompt engineering</span>
+            </li>
+            <li>
+              <span class="lang-tr">DB schema, API spec, ADR</span>
+              <span class="lang-en">DB schema, API spec, ADR</span>
+            </li>
+            <li>
+              <span class="lang-tr">Test ve doğrulama planı</span>
+              <span class="lang-en">Test &amp; QA planning</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public §04 Questions -->
+    <section class="section">
+      <div class="section-header">
+        <div><div class="section-number">§04 — Questions</div></div>
+        <h2 class="section-title">
+          <span class="lang-tr">Dört zorunlu<br><em>soru</em>.</span>
+          <span class="lang-en">Four required<br><em>questions</em>.</span>
+        </h2>
+      </div>
+      <div class="qa-grid">
+        <div class="qa-card">
+          <div class="qa-q">
+            <span class="q-num">Q1</span>
+            <span class="lang-tr">Bu aracı neden seçtin?</span>
+            <span class="lang-en">Why did you choose this tool?</span>
+          </div>
+          <div class="qa-a">
+            <p class="lang-tr"><strong>GitHub Projects</strong>, çünkü projemiz yazılım; araç ücretsiz ve endüstri standardı; ödevin her gereksinimini karşılıyor; ve önemlisi farklılaştırıcı — çoğu takım Trello/Asana seçti, biz kodun yaşadığı yerde olan aracı seçtik.</p>
+            <p class="lang-en"><strong>GitHub Projects</strong>, because our project is software; the tool is free and industry-standard; it satisfies every assignment requirement; and crucially it differentiates us — most teams went with Trello/Asana, we picked the tool that lives where the code lives.</p>
+          </div>
+        </div>
+        <div class="qa-card">
+          <div class="qa-q">
+            <span class="q-num">Q2</span>
+            <span class="lang-tr">Projeyi nasıl planladın?</span>
+            <span class="lang-en">How did you plan the project?</span>
+          </div>
+          <div class="qa-a">
+            <p class="lang-tr"><strong>PMBOK 5 faz modeli</strong> + <strong>SMART hedefler</strong>. Day 1 Initiation (charter, risks). Days 2-4 Planning. Days 5-9 Execution scope'u. Day 10 Closure. Monitoring &amp; Control her şey boyunca paralel. Charter'da 5 numaralı SMART objective var; Faz 4 bunlara karşı ölçüm yapıyor.</p>
+            <p class="lang-en"><strong>PMBOK 5 phases</strong> + <strong>SMART objectives</strong>. Day 1 Initiation (charter, risks). Days 2-4 Planning. Days 5-9 Execution scope. Day 10 Closure. Monitoring &amp; Control runs throughout. Charter has 5 numbered SMART objectives; Phase 4 measures against them.</p>
+          </div>
+        </div>
+        <div class="qa-card">
+          <div class="qa-q">
+            <span class="q-num">Q3</span>
+            <span class="lang-tr">Sorumlulukları nasıl böldün?</span>
+            <span class="lang-en">How did you divide responsibilities?</span>
+          </div>
+          <div class="qa-a">
+            <p class="lang-tr">Eşit değil, <strong>güce göre</strong>. Kaan — frontend, design, PM. Caner — backend, AI, QA. Cross-functional işler (charter, risk register, sunum) ortak. Charter'da kural: efor saatleri ±%15. KPI doc haftalık takipte. Kod yazmadan önce güçlü yönleri bildik.</p>
+            <p class="lang-en">Not equally — <strong>by strength</strong>. Kaan — frontend, design, PM. Caner — backend, AI, QA. Cross-functional (charter, risks, presentation) co-owned. Charter rule: hours within ±15%. KPI doc tracks weekly. We knew our strengths before any technical commitment.</p>
+          </div>
+        </div>
+        <div class="qa-card">
+          <div class="qa-q">
+            <span class="q-num">Q4</span>
+            <span class="lang-tr">Hangi zorluklarla karşılaştın?</span>
+            <span class="lang-en">What challenges did you face?</span>
+          </div>
+          <div class="qa-a">
+            <p class="lang-tr"><strong>Üç planlama zorluğu.</strong> (1) Scope disiplini — AI özellikleri eklemek istiyor, charter'ın out-of-scope listesi can simidi. (2) AI öngörülemezliği için tasarım — DeepSeek malformed JSON döndürebiliyor, 2-aşamalı validation + retry spec'i. (3) Program gerçekçiliği — Caner'in sınavı bilinen kısıt, plan backend işlerini önce çekti, 9. günde buffer.</p>
+            <p class="lang-en"><strong>Three planning challenges.</strong> (1) Scope discipline — AI features tempt expansion; charter's out-of-scope list became the lifeboat. (2) Designing for AI unpredictability — DeepSeek can return malformed JSON, spec'd 2-stage validation + retry. (3) Schedule realism — Caner's exam is a known constraint; the plan front-loads his backend issues with a buffer on Day 9.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public §05 Risks/lessons -->
+    <section class="section">
+      <div class="section-header">
+        <div><div class="section-number">§05 — Risks &amp; lessons</div></div>
+        <h2 class="section-title">
+          <span class="lang-tr">Mükemmel plan<br><em>yoktur</em>.</span>
+          <span class="lang-en">No plan is<br><em>perfect</em>.</span>
+        </h2>
+      </div>
+      <div class="section-content">
+        <p>
+          <span class="lang-tr">Dürüst sunum gereği planın açıklarını da ortaya koymalıyız. Aşağıda risk register'dan 3 ana risk ve her birine karşı geliştirdiğimiz aksiyon planı.</span>
+          <span class="lang-en">An honest presentation requires showing the plan's weaknesses too. Below are 3 main risks from the register and the actions planned against each.</span>
+        </p>
+      </div>
+      <div class="risk-table">
+        <div class="risk-row">
+          <div class="risk-num">R2</div>
+          <div class="risk-name">
+            <span class="lang-tr">Scope creep — AI özellikleri sürekli eklenmek istiyor (voice, calendar, social).</span>
+            <span class="lang-en">Scope creep — AI features keep getting suggested (voice, calendar, social).</span>
+          </div>
+          <div class="risk-action">
+            <span class="risk-action-label">
+              <span class="lang-tr">Aksiyon</span>
+              <span class="lang-en">Action</span>
+            </span>
+            <span class="lang-tr">Charter'ın out-of-scope listesi <em>kontrat</em>. Haftalık scope check. Tüm yeni fikirler "Brickly v2" backlog'a düşer, tartışmaya açılmaz.</span>
+            <span class="lang-en">Charter's out-of-scope list is the <em>contract</em>. Weekly scope check. All new ideas land in the "Brickly v2" backlog without debate.</span>
+          </div>
+        </div>
+        <div class="risk-row">
+          <div class="risk-num">R5</div>
+          <div class="risk-name">
+            <span class="lang-tr">AI hallucination — DeepSeek anlamsız mikro-task'lar üretebilir.</span>
+            <span class="lang-en">AI hallucination — DeepSeek may produce nonsensical micro-tasks.</span>
+          </div>
+          <div class="risk-action">
+            <span class="risk-action-label">
+              <span class="lang-tr">Aksiyon</span>
+              <span class="lang-en">Action</span>
+            </span>
+            <span class="lang-tr">Prompt engineering iterasyonu (#15). Structured JSON çıktı + Zod validation. Frontend kullanıcıya edit/reject izni veriyor.</span>
+            <span class="lang-en">Prompt engineering iteration (#15). Structured JSON output + Zod validation. Frontend lets the user edit/reject tasks.</span>
+          </div>
+        </div>
+        <div class="risk-row">
+          <div class="risk-num">R7</div>
+          <div class="risk-name">
+            <span class="lang-tr">Prompt template iterasyonu 2 saatten uzun sürebilir.</span>
+            <span class="lang-en">Prompt template iteration may take longer than 2 hours.</span>
+          </div>
+          <div class="risk-action">
+            <span class="risk-action-label">
+              <span class="lang-tr">Aksiyon</span>
+              <span class="lang-en">Action</span>
+            </span>
+            <span class="lang-tr">4 saatlik time-box. "Yeterince iyi" v1 ship et. Materialized — mitigation çalıştı. Risk closed at mid-project review.</span>
+            <span class="lang-en">4-hour time-box. Ship a "good enough" v1. Materialized — mitigation worked. Risk closed at the mid-project review.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THANKS -->
+    <section class="thanks">
+      <div class="thanks-title">
+        <span class="lang-tr">Teşekk<em>ürler</em>.</span>
+        <span class="lang-en">Thank <em>you</em>.</span>
+      </div>
+      <div class="thanks-sub">
+        <span class="lang-tr">Sorular? — Kaan + Caner</span>
+        <span class="lang-en">Questions? — Kaan + Caner</span>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p class="footer-quote">
+        <span class="lang-tr">Charter'dan koda; sırasını bozma. Bu sefer planda durduk.</span>
+        <span class="lang-en">Charter before code. We stopped at the plan, on purpose.</span>
+      </p>
+      <div class="footer-sig">
+        <div class="footer-author">
+          <div class="footer-author-name">Brickly · 2026</div>
+          <div class="footer-author-detail">IT Project Management · Final</div>
+        </div>
+        <div class="footer-date">
+          <div>github.com/kaanzapkinus/brickly-project-plan</div>
+          <div>WSB Merito Wrocław · SD1</div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--                  SCRIPT                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<script>
+// Top tab switcher
+const topTabs = document.querySelectorAll('.top-tab');
+const tabPanes = document.querySelectorAll('.tab-pane');
+
+topTabs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    topTabs.forEach(b => b.classList.toggle('active', b === btn));
+    tabPanes.forEach(p => p.classList.toggle('active', p.dataset.pane === target));
+    document.documentElement.dataset.tab = target;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  });
+});
+
+// Sub-tab switcher (inside Sunum)
+const subTabs = document.querySelectorAll('.sub-tab');
+const subPanes = document.querySelectorAll('.sub-pane');
+
+subTabs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.sub;
+    subTabs.forEach(b => b.classList.toggle('active', b === btn));
+    subPanes.forEach(p => p.classList.toggle('active', p.dataset.subPane === target));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  });
+});
+
+// Language switcher
+const langBtns = document.querySelectorAll('.lang-btn');
+langBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.lang;
+    langBtns.forEach(b => b.classList.toggle('active', b === btn));
+    document.documentElement.dataset.lang = target;
+    document.documentElement.lang = target;
+  });
+});
+
+// Keyboard shortcuts (presenter helpers)
+document.addEventListener('keydown', (e) => {
+  // 1 = brifing, 2 = sunum
+  if (e.key === '1') document.querySelector('[data-tab="brifing"]').click();
+  if (e.key === '2') document.querySelector('[data-tab="sunum"]').click();
+  // Inside sunum: c = caner, k = kaan, p = public
+  if (e.key === 'c') document.querySelector('[data-sub="caner"]')?.click();
+  if (e.key === 'k') document.querySelector('[data-sub="kaan"]')?.click();
+  if (e.key === 'p') document.querySelector('[data-sub="public"]')?.click();
+  // t/e = TR/EN
+  if (e.key === 't') document.querySelector('[data-lang="tr"]').click();
+  if (e.key === 'e') document.querySelector('[data-lang="en"]').click();
+});
+</script>
+
+</body>
+</html>

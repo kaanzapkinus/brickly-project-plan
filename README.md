@@ -11,6 +11,7 @@
 | **Framework** | PMBOK 5 phases — Initiation → Planning → Execution → Monitoring & Control → Closure |
 | **Project window** | 2026-05-05 → 2026-05-18 (10 working days) |
 | **Submission / live presentation** | 2026-05-19 |
+| **Live presentation page** | [presentation.html](presentation.html) · [view rendered](https://htmlpreview.github.io/?https://github.com/kaanzapkinus/brickly-project-plan/blob/main/presentation.html) |
 
 ---
 

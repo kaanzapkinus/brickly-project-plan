@@ -1,17 +1,30 @@
 # Brickly — Project Plan
 
-> **IT Project Management course final assignment.**
-> This repository contains the **project plan** and management artifacts for Brickly. The assignment is to plan the project, not to ship the app — Brickly is the case study used to demonstrate end-to-end IT project planning in GitHub Projects.
+> **WSB Merito Wrocław · IT Project Management · Final assignment · 2026**
+
+## About the course
+
+**IT Project Management** is a foundations course covering how to plan, organise, and control software and IT projects using the **PMBOK 5-phase methodology** (Initiation → Planning → Execution → Monitoring &amp; Control → Closure) and industry-standard tooling. Topics covered: project charters, stakeholder analysis, scope definition and WBS, risk management, scheduling and resource allocation, communication planning, monitoring KPIs, and project closure activities.
+
+## About the assignment
+
+The final task is to choose **one IT project management tool** (Trello, Asana, Notion, ClickUp, Jira, GitHub Projects, etc.) and use it to produce a **full project plan** for the To-Do app concept defined in an earlier assignment. The plan must include milestones, tasks/subtasks, assigned resources, deadlines/timeline, labels, priorities, and dependencies. Each team then presents the plan live in class and answers four mandatory discussion questions about tool choice, planning methodology, responsibility split, and challenges faced.
+
+> The deliverable is the **plan**, not the running application.
+
+## About this repository
+
+This repository is our submission. It contains the project plan and all management artifacts for **Brickly** — a hypothetical AI-powered to-do app concept — built in **GitHub Projects v2** as a 10-day delivery plan, organised under the PMBOK 5-phase framework. The 27 issues currently in `Todo` describe the execution backlog a future team could pick up from issue [#22](https://github.com/kaanzapkinus/brickly-project-plan/issues/22) onwards.
 
 | Field | Value |
 |---|---|
-| **Course** | IT Project Management |
+| **Course** | IT Project Management · WSB Merito Wrocław |
 | **Team** | Kaan Yazıcıoğlu (#97364, SD1) + Caner Akcasu (#97334, SD1) |
 | **Tool** | GitHub Projects (Projects v2) |
-| **Framework** | PMBOK 5 phases — Initiation → Planning → Execution → Monitoring & Control → Closure |
+| **Framework** | PMBOK 5 phases · SMART objectives |
 | **Project window** | 2026-05-05 → 2026-05-18 (10 working days) |
 | **Submission / live presentation** | 2026-05-19 |
-| **Live presentation page** | [presentation.html](presentation.html) · [view rendered](https://htmlpreview.github.io/?https://github.com/kaanzapkinus/brickly-project-plan/blob/main/presentation.html) |
+| **Live presentation page** | [kaanzapkinus.github.io/brickly-project-plan/presentation.html](https://kaanzapkinus.github.io/brickly-project-plan/presentation.html) |
 
 ---
 
@@ -73,7 +86,8 @@ The charter has an explicit load-balance rule: assigned effort hours must stay w
 
 ## How to navigate this repo for a review
 
-1. **Start with the Project board** ([Projects tab](https://github.com/kaanzapkinus/brickly-project-plan/projects)) — switch to the **Timeline view** for the visual Gantt of all 5 PMBOK phases.
-2. Open **[docs/PROJECT_CHARTER.md](docs/PROJECT_CHARTER.md)** — read the 5 SMART objectives, scope, and high-level risks.
-3. Open **[docs/SUPPORTING_ARTIFACTS.md](docs/SUPPORTING_ARTIFACTS.md)** — full stakeholder register, risk register, WBS, communication plan, SMART goals brief, KPI tracking.
-4. Browse **[Issues](https://github.com/kaanzapkinus/brickly-project-plan/issues)** — every issue has an acceptance-criteria checklist, labels, milestone, assignee, and effort estimate.
+1. Open the **[live presentation page](https://kaanzapkinus.github.io/brickly-project-plan/presentation.html)** — bilingual (TR/EN) self-contained overview that mirrors what was shown in class.
+2. **Start with the Project board** ([Projects tab](https://github.com/kaanzapkinus/brickly-project-plan/projects)) — switch to the **Timeline view** for the visual Gantt of all 5 PMBOK phases.
+3. Open **[docs/PROJECT_CHARTER.md](docs/PROJECT_CHARTER.md)** — the 5 SMART objectives, scope, and high-level risks.
+4. Browse the rest of **[docs/](docs/)** — stakeholder register, risk register, WBS, communication plan, SMART goals brief, KPI tracking, ADR, mid-project review, schedule variance analysis, post-mortem.
+5. Browse **[Issues](https://github.com/kaanzapkinus/brickly-project-plan/issues)** — every issue has an acceptance-criteria checklist, labels, milestone, assignee, and effort estimate.
